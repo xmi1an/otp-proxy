@@ -1,6 +1,8 @@
 // api/verify-otp.js
 
 const axios = require("axios");
+// add dotenv package
+require("dotenv").config();
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -16,21 +18,24 @@ module.exports = async (req, res) => {
       .status(400)
       .json({ status: false, message: "Phone number and OTP are required" });
   }
+try {
+  const response = await axios.post(process.env.OTP_VERIFY_API_URL, {
+    phone_number,
+    otp,
+  });
 
-  try {
-    // Optional: Add any authentication or rate limiting here
+  // Modify the response data here
+  const modifiedResponse = {
+    status: response.data.status,
+    message: response.data.message,
+    created_by: "xmi1an",
+  };
 
-    const response = await axios.post(process.env.OTP_VERIFY_API_URL, {
-      phone_number,
-      otp,
-    });
-
-    // You can manipulate the response if needed
-    return res.status(response.status).json(response.data);
-  } catch (error) {
-    console.error("Error verifying OTP:", error.message);
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal Server Error" });
-  }
+  return res.status(response.status).json(modifiedResponse);
+} catch (error) {
+  console.error("Error verifying OTP:", error.message);
+  return res
+    .status(500)
+    .json({ status: false, message: "Internal Server Error" });
+}
 };

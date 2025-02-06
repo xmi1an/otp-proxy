@@ -1,6 +1,7 @@
-// api/send-otp.js
-
 const axios = require('axios');
+
+// add dotenv package
+require('dotenv').config();
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -14,8 +15,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Optional: Add any authentication or rate limiting here
-
     const response = await axios.post(process.env.OTP_SEND_API_URL, {
       phone_number,
     });
